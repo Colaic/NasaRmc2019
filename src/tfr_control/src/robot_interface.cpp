@@ -19,6 +19,12 @@ namespace tfr_control
                 &RobotInterface::readArduinoA, this)},
         arduino_b{n.subscribe("/sensors/arduino_b", 5,
                 &RobotInterface::readArduinoB, this)},
+	brushless_a_vel{n.subscribe("/device8/get_qry_relcntr/channel_1", 5,
+                &RobotInterface::accumulateBrushlessAVel, this)},
+	brushless_b_vel{n.subscribe("/device8/get_qry_relcntr/channel_2", 5,
+                &RobotInterface::accumulateBrushlessBVel, this)},
+		brushless_a_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_1", 1)},
+		brushless_b_vel_publisher{n.advertise<std_msgs::Int32>("/device8/set_cmd_cango/cmd_cango_2", 1)},
         pwm_publisher{n.advertise<tfr_msgs::PwmCommand>("/motor_output", 15)},
         use_fake_values{fakes}, lower_limits{lower_lim},
         upper_limits{upper_lim}, drivebase_v0{std::make_pair(0,0)},
@@ -67,12 +73,12 @@ namespace tfr_control
 
         //LEFT_TREAD
         position_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = -reading_a.tread_left_vel;
+        velocity_values[static_cast<int>(Joint::LEFT_TREAD)] = readBrushlessAVel();
         effort_values[static_cast<int>(Joint::LEFT_TREAD)] = 0;
 
         //RIGHT_TREAD
         position_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
-        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = reading_b.tread_right_vel;
+        velocity_values[static_cast<int>(Joint::RIGHT_TREAD)] = readBrushlessBVel();
         effort_values[static_cast<int>(Joint::RIGHT_TREAD)] = 0;
 
         if (!use_fake_values)
@@ -167,14 +173,16 @@ namespace tfr_control
          }
 
         //LEFT_TREAD
-        signal = -drivebaseVelocityToPWM(command_values[static_cast<int>(Joint::LEFT_TREAD)], drivebase_v0.first);
-        command.tread_left = signal;
+        double left_tread_command = command_values[static_cast<int32_t>(Joint::LEFT_TREAD)];
+		std_msgs::Int32 left_tread_msg;
+		left_tread_msg.data = static_cast<int32_t>(left_tread_command);
+        brushless_a_vel_publisher.publish(left_tread_msg);
 
         //RIGHT_TREAD
-        signal = drivebaseVelocityToPWM(command_values[static_cast<int>(Joint::RIGHT_TREAD)],
-                    drivebase_v0.second);
-        command.tread_right = signal;
-
+        double right_tread_command = command_values[static_cast<int32_t>(Joint::RIGHT_TREAD)];
+		std_msgs::Int32 right_tread_msg;
+		right_tread_msg.data = static_cast<int32_t>(right_tread_command);
+        brushless_b_vel_publisher.publish(right_tread_msg);
 
         //BIN
         auto twin_signal = twinAngleToPWM(command_values[static_cast<int>(Joint::BIN)],
@@ -437,6 +445,58 @@ namespace tfr_control
         latest_arduino_b = msg;
     }
 
+	void RobotInterface::accumulateBrushlessAVel(const std_msgs::Int32 &msg)
+	{
+		brushless_a_mutex.lock();
+
+		accumulated_brushless_a_vel += msg.data;
+		accumulated_brushless_a_vel_num_updates++;
+
+		brushless_a_mutex.unlock();
+	}
+	
+	void RobotInterface::accumulateBrushlessBVel(const std_msgs::Int32 &msg)
+	{
+		brushless_b_mutex.lock();
+
+		accumulated_brushless_b_vel += msg.data;
+		accumulated_brushless_b_vel_num_updates++;
+
+		brushless_b_mutex.unlock();
+	}
+	
+	int32_t RobotInterface::readBrushlessAVel()
+	{
+		brushless_a_mutex.lock();
+
+		int32_t vel = accumulated_brushless_a_vel;
+		int32_t num_updates = accumulated_brushless_a_vel_num_updates;
+
+		accumulated_brushless_a_vel = 0;
+		accumulated_brushless_a_vel_num_updates = 0;
+
+		brushless_a_mutex.unlock();
+		
+		// TODO: Calculate the velocity to return.
+		return vel;
+	}
+	
+	int32_t RobotInterface::readBrushlessBVel()
+	{
+		brushless_b_mutex.lock();
+
+		int32_t vel = accumulated_brushless_b_vel;
+		int32_t num_updates = accumulated_brushless_b_vel_num_updates;
+
+		accumulated_brushless_b_vel = 0;
+		accumulated_brushless_b_vel_num_updates = 0;
+
+		brushless_b_mutex.unlock();
+		
+		// TODO: Calculate the velocity to return.
+		return vel;
+	}
+	
     void RobotInterface::zeroTurntable()
     {
         //Grab the neccessary data

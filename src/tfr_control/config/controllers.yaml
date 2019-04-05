@@ -29,7 +29,7 @@
 # Publish all joint states -----------------------------------
 joint_state_controller:
     type: joint_state_controller/JointStateController
-    publish_rate: 50
+    publish_rate: 2
 
     # Controllers ------------------------------------------------
     #
@@ -37,20 +37,29 @@ left_tread_velocity_controller:
     type: effort_controllers/JointVelocityController
     joint: left_tread_joint
     pid: { 
-        p: 1.1, 
-        i: 0.9, 
-        d: 0.05
+        p: 0.0, 
+        i: 0.0, 
+        d: 0.0
     }
+    # pid: { 
+        # p: 1.1, 
+        # i: 0.9, 
+        # d: 0.05
+    # }
 
 right_tread_velocity_controller:
     type: effort_controllers/JointVelocityController
     joint: right_tread_joint
     pid: { 
-        p: 1.1, 
-        i: 0.9,
-        d: 0.05
+        p: 0.0, 
+        i: 0.0,
+        d: 0.0
     }
-
+    # pid: { 
+        # p: 1.1, 
+        # i: 0.9,
+        # d: 0.05
+    # }
 
 bin_position_controller:
     type: position_controllers/JointPositionController

@@ -16,6 +16,7 @@
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Int32.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
@@ -26,6 +27,7 @@
 #include <tfr_msgs/PwmCommand.h>
 #include <tfr_utilities/control_code.h>
 #include <vector>
+#include <mutex>
 
 namespace tfr_control {
 
@@ -58,39 +60,39 @@ namespace tfr_control {
 
         RobotInterface(ros::NodeHandle &n, bool fakes, const double lower_lim[JOINT_COUNT],
                 const double upper_lim[JOINT_COUNT]);
-
+	
         
         /*
          * Reads state from hardware (encoders/potentiometers) and writes it to
          * shared memory 
          * */
         void read();
-
+	
         /*
          * Takes commanded states from shared memory, enforces basic safety
          * contraints, and writes them to hardware
          * */
         void write();
-
-
+	
+	
         /*
          * retrieves the state of the bin
          * */
         double getBinState();
-
+	
         /*
          * retrieves the state of the arm
          * */
         void getArmState(std::vector<double>&);
-
+	
         /*
          * Clears all command values being sent and sets them to safe values
          * stops the treads and commands the arm to hold position.
          * */
         void clearCommands();
-
+	
         void setEnabled(bool val);
-
+	
         void zeroTurntable();
 
     private:
@@ -108,8 +110,25 @@ namespace tfr_control {
         bool enabled;
         tfr_msgs::ArduinoAReadingConstPtr latest_arduino_a;
         tfr_msgs::ArduinoBReadingConstPtr latest_arduino_b;
-
         double turntable_offset;
+
+	// Read the relative velocity counters from the brushless motor controller
+	ros::Subscriber brushless_a_vel;
+	ros::Subscriber brushless_b_vel;
+	
+	ros::Publisher brushless_a_vel_publisher;
+	ros::Publisher brushless_b_vel_publisher;
+	
+	std::mutex brushless_a_mutex;
+	int32_t accumulated_brushless_a_vel = 0;
+	int32_t accumulated_brushless_a_vel_num_updates = 0;
+	std::mutex brushless_b_mutex;
+	int32_t accumulated_brushless_b_vel = 0;
+	int32_t accumulated_brushless_b_vel_num_updates = 0;
+	void accumulateBrushlessAVel(const std_msgs::Int32 &msg);
+	void accumulateBrushlessBVel(const std_msgs::Int32 &msg);
+	int32_t readBrushlessAVel();
+	int32_t readBrushlessBVel();
 
 
         // Populated by controller layer for us to use
@@ -135,7 +154,9 @@ namespace tfr_control {
         void readArduinoA(const tfr_msgs::ArduinoAReadingConstPtr &msg);
         //callback for publisher
         void readArduinoB(const tfr_msgs::ArduinoBReadingConstPtr &msg);
-
+	
+	
+	
         /**
          * Gets the PWM appropriate output for an angle joint at the current time
          * */

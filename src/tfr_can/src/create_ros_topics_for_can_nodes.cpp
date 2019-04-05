@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 
 	// Set the name of your CAN bus. "slcan0" is a common bus name
 	// for the first SocketCAN device on a Linux system.
-	const std::string busname = "can0";
+	const std::string busname = "can1";
 
 	// Set the baudrate of your CAN bus. Most drivers support the values
 	// "1M", "500K", "125K", "100K", "50K", "20K", "10K" and "5K".
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 
 	const size_t num_devices_required = 2;
 
-	const double loop_rate = 10; // [Hz]
+	const double loop_rate = 4; // [Hz]
 
 	
 	kaco::Master master;
@@ -76,25 +76,36 @@ int main(int argc, char* argv[]) {
     		bridge.add_subscriber(iosub_1_1);
 
 			auto iopub_1_1 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_1");
-    		bridge.add_publisher(iopub_1_1,10);
+    		bridge.add_publisher(iopub_1_1, loop_rate);
 
 			auto iopub_1_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_batamps/channel_1");
-    		bridge.add_publisher(iopub_1_2,10);
+    		bridge.add_publisher(iopub_1_2, loop_rate);
 
 			auto iosub_2_1 = std::make_shared<kaco::EntrySubscriber>(device, "cmd_cango/cmd_cango_2");
     		bridge.add_subscriber(iosub_2_1);
 
 			auto iopub_2_1 = std::make_shared<kaco::EntryPublisher>(device, "qry_relcntr/channel_2");
-    		bridge.add_publisher(iopub_2_1,10);
+    		bridge.add_publisher(iopub_2_1, loop_rate);
 
 			auto iopub_2_2 = std::make_shared<kaco::EntryPublisher>(device, "qry_batamps/channel_2");
-    		bridge.add_publisher(iopub_2_2,10);
+    		bridge.add_publisher(iopub_2_2, loop_rate);
 		}
 
 	}
 
 	PRINT("About to call bridge.run()");
-	bridge.run();
+	while (ros::ok())
+	{
+		try
+		{
+			bridge.run();
+		}
+		catch (const std::exception& e)
+		{
+			PRINT(e.what() << std::endl);
+		}
+	}
+	
 	
 	return EXIT_SUCCESS;
 }
