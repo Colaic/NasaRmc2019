@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="excavator">
+  
+  <!-- attatch robot to world frame-->
+  <link name="world"/>
+
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>  
+  
   <!-- CHASSIS -->
   <link name="base_link" >
     <visual>
@@ -61,6 +70,13 @@
       </geometry>
       <origin xyz="${tube_width / 2 - base_length / 2} 0 0" />
     </collision>
+
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+
   </link>
 
   <!-- DRIVEBASE -->
@@ -76,6 +92,11 @@
         <box size="${tread_mid_length} ${tread_width} ${tread_mid_height}"/>
       </geometry>
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
 
   <joint name="left_tread_joint" type="fixed">
@@ -95,6 +116,11 @@
         <box size="${tread_mid_length} ${tread_width} ${tread_mid_height}"/>
       </geometry>
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
 
   <joint name="right_tread_joint" type="fixed">
@@ -116,6 +142,11 @@
       </geometry>
       <origin rpy="${pi/2} 0.0 0.0" />
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
 
   <joint name="tread_left_front_joint" type="fixed">
@@ -137,6 +168,11 @@
       </geometry>
       <origin rpy="${pi/2} 0.0 0.0" />
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
 
   <joint name="tread_left_rear_joint" type="fixed">
@@ -158,6 +194,11 @@
       </geometry>
       <origin rpy="${pi/2} 0.0 0.0" />
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
 
   <joint name="tread_right_front_joint" type="fixed">
@@ -179,6 +220,11 @@
       </geometry>
       <origin rpy="${pi/2} 0.0 0.0" />
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
 
   <joint name="tread_right_rear_joint" type="fixed">
@@ -200,6 +246,11 @@
       </geometry>
       <origin xyz="${tread_slope_length/2} 0.0 ${-1.25/2*itom}" />
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
 
   <joint name="front_right_slope_joint" type="fixed">
@@ -221,6 +272,11 @@
       </geometry>
       <origin xyz="${tread_slope_length/2} 0.0 ${-1.25/2*itom}" />
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
 
   <joint name="front_left_slope_joint" type="fixed">
@@ -243,6 +299,11 @@
       </geometry>
       <origin xyz="${bin_length} 0 ${-bin_height/2 + bin_height - (9.88 * itom) + (0.5*itom)}" />
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
   <joint name="bin_joint" type="revolute">
     <parent link="base_link" />
@@ -263,6 +324,11 @@
         <box size="${bin_length} ${0.125*itom} ${bin_height}"/>
       </geometry>
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
   <joint name="bin_right_joint" type="fixed">
     <parent link="bin_back" />
@@ -281,6 +347,11 @@
         <box size="${bin_length} ${0.125*itom} ${bin_height}"/>
       </geometry>
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
   <joint name="bin_left_joint" type="fixed">
     <parent link="bin_back" />
@@ -299,6 +370,11 @@
         <box size="${13.84*itom} ${bin_width} ${0.125*itom}"/>
       </geometry>
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
   <joint name="bin_bottom_joint" type="fixed">
     <parent link="bin_back" />
@@ -319,6 +395,11 @@
       </geometry>
       <origin xyz="0 0 ${-bin_height*sqrt2*0.5}"/>
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
   <joint name="bin_slope_joint" type="fixed">
     <parent link="bin_back" />
@@ -338,6 +419,11 @@
       </geometry>
       <origin xyz=" ${bin_back_offset}  0 0"/>
     </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
   </link>
   <joint name="bin_slope_2_joint" type="fixed">
     <parent link="bin_back" />
