@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="excavator">
+
+  <!--DIGGING ARM-->
+  <link name="turntable">
+    <visual>
+      <geometry>
+        <cylinder radius="${turntable_radius}" length="${turntable_height}" />
+      </geometry>
+      <origin xyz="0 0 ${turntable_height/2}" rpy="0 0 ${pi}" />
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${turntable_radius}" length="${turntable_height}" />
+      </geometry>
+      <origin xyz="0 0 ${turntable_height/2}" rpy="0 0 ${pi}" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="turntable_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="turntable" />
+    <origin xyz="${base_length/2-turntable_radius} 0 ${drivebase_front_beam_height/2}" rpy="0 0 ${pi}" />
+    <axis xyz="0 0 1" />
+    <limit effort="1.0" velocity="1.0" lower="${-1.1*pi}" upper="${1.1*pi}" />
+  </joint>
+  <transmission name="turntable_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="turn_to_base">
+      <hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="turntable_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+      <motorTorqueConstant>1</motorTorqueConstant>
+    </actuator>
+  </transmission>
+
+  <link name="lower_arm">
+    <visual>
+      <geometry>
+        <box size="${lower_arm_height} ${lower_arm_width} ${lower_arm_primary_length}"/>
+      </geometry>
+      <origin xyz="${-lower_arm_height/2} 0 ${14*itom}" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${lower_arm_height} ${lower_arm_width} ${lower_arm_primary_length}"/>
+      </geometry>
+      <origin xyz="${-lower_arm_height/2} 0 ${14*itom}" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="lower_arm_joint" type="revolute">
+    <parent link="turntable" />
+    <child link="lower_arm" />
+    <axis xyz="0 1 0" />
+    <origin xyz="${-2.165*itom} 0 ${turntable_height}" />
+    <limit effort="1.0" velocity="1.0" lower="${lower_arm_min}"
+          upper="${lower_arm_max}" />
+  </joint>
+  <transmission name="lower_arm_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lower_to_turn">
+      <hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="lower_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+      <motorTorqueConstant>1</motorTorqueConstant>
+    </actuator>
+  </transmission>
+  
+  <link name="lower_arm_bottom">
+    <visual>
+      <geometry>
+        <box size="${0.25*itom} ${lower_arm_width} ${lower_arm_length - lower_arm_primary_length}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${0.25*itom} ${lower_arm_width} ${lower_arm_length - lower_arm_primary_length}"/>
+      </geometry>
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="lower_arm_bottom_joint" type="fixed">
+    <parent link="lower_arm" />
+    <child link="lower_arm_bottom" />
+    <origin xyz="${-0.125*itom} 0 ${(lower_arm_length - lower_arm_primary_length)/2}" />
+  </joint>
+  
+  <link name="lower_arm_slope">
+    <visual>
+      <geometry>
+        <box size="${0.25*itom} ${lower_arm_width} ${(lower_arm_length - lower_arm_primary_length) * sqrt2}"/>
+      </geometry>
+      <origin xyz="${0.125*itom} 0 ${-(lower_arm_length - lower_arm_primary_length) / 2 * sqrt2}" rpy="0 0 0" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${0.25*itom} ${lower_arm_width} ${(lower_arm_length - lower_arm_primary_length) * sqrt2}"/>
+      </geometry>
+      <origin xyz="${0.125*itom} 0 ${-(lower_arm_length - lower_arm_primary_length) / 2 * sqrt2}" rpy="0 0 0" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="lower_arm_slope_joint" type="fixed">
+    <parent link="lower_arm" />
+    <child link="lower_arm_slope" />
+    <origin xyz="${-lower_arm_height} 0 ${(lower_arm_length - lower_arm_primary_length)}" rpy="0 ${-44*dtor} 0"/>
+  </joint>
+
+  <link name="upper_arm">
+    <visual>
+      <geometry>
+        <box size="${upper_arm_height} ${upper_arm_width} ${upper_arm_length}"/>
+      </geometry>
+      <origin xyz="${-upper_arm_height/2} 0 ${upper_arm_length/2}" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${upper_arm_height} ${upper_arm_width} ${upper_arm_length}"/>
+      </geometry>
+      <origin xyz="${-upper_arm_height/2} 0 ${upper_arm_length/2}" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="upper_arm_joint" type="revolute">
+    <parent link="lower_arm" />
+    <child link="upper_arm" />
+    <axis xyz="0 1 0" />
+    <origin xyz="0 0 ${lower_arm_length}" />
+    <limit effort="1.0" velocity="1.0" lower="${upper_arm_min}"
+          upper="${upper_arm_max}" />
+  </joint>
+  <transmission name="upper_arm_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="upper_to_lower">
+      <hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="upper_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+      <motorTorqueConstant>1</motorTorqueConstant>
+    </actuator>
+  </transmission>
+
+  <link name="scoop">
+    <visual>
+      <geometry>
+        <box size="${scoop_length} ${scoop_width} ${scoop_diameter/2}" />
+      </geometry>
+      <origin xyz="${scoop_length/2} 0 ${scoop_diameter/4}" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${scoop_length} ${scoop_width} ${scoop_diameter/2}" />
+      </geometry>
+      <origin xyz="${scoop_length/2} 0 ${scoop_diameter/4}" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="scoop_joint" type="revolute">
+    <parent link="upper_arm" />
+    <child link="scoop" />
+    <origin xyz="${1.5*itom} 0 ${upper_arm_length - (0.875*itom)}" />
+    <axis xyz="0 1 0" />
+    <limit effort="1.0" velocity="1.0" lower="${scoop_min}"
+          upper="${scoop_max}" />
+  </joint>
+  <transmission name="scoop_tran">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="end_to_arm">
+      <hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>
+    </joint>
+    <actuator name="end_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+      <motorTorqueConstant>1</motorTorqueConstant>
+    </actuator>
+  </transmission>
+</robot>

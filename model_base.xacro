@@ -1,0 +1,425 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="excavator">
+  <!-- CHASSIS -->
+  <link name="base_link" >
+    <visual>
+      <geometry>
+        <box size="${base_length} ${tube_width} ${drivebase_total_height}"/>
+      </geometry>
+      <origin xyz="0 ${drivebase_beam_width / 2 + tube_width / 2} 0" />
+    </visual>
+
+    <visual>
+      <geometry>
+        <box size="${base_length} ${tube_width} ${drivebase_total_height}"/>
+      </geometry>
+      <origin xyz="0 ${-drivebase_beam_width / 2 - tube_width / 2} 0" />
+    </visual>
+
+    <!-- Front beam -->
+    <visual>
+      <geometry>
+        <box size="${tube_width} ${drivebase_beam_width} ${drivebase_front_beam_height}"/>
+      </geometry>
+      <origin xyz="${base_length / 2 - tube_width / 2} 0 ${drivebase_front_beam_height / 2 - drivebase_total_height / 2}" />
+    </visual>
+
+    <!-- Rear beam -->
+    <visual>
+      <geometry>
+        <box size="${tube_width} ${drivebase_beam_width} ${drivebase_total_height}"/>
+      </geometry>
+      <origin xyz="${tube_width / 2 - base_length / 2} 0 0" />
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="${base_length} ${tube_width} ${drivebase_total_height}"/>
+      </geometry>
+      <origin xyz="0 ${drivebase_beam_width / 2 + tube_width / 2} 0" />
+    </collision>
+
+    <collision>
+      <geometry>
+        <box size="${base_length} ${tube_width} ${drivebase_total_height}"/>
+      </geometry>
+      <origin xyz="0 ${-drivebase_beam_width / 2 - tube_width / 2} 0" />
+    </collision>
+
+    <!-- Front beam -->
+    <collision>
+      <geometry>
+        <box size="${tube_width} ${drivebase_beam_width} ${drivebase_front_beam_height}"/>
+      </geometry>
+      <origin xyz="${base_length / 2 - tube_width / 2} 0 ${drivebase_front_beam_height / 2 - drivebase_total_height / 2}" />
+    </collision>
+
+    <!-- Rear beam -->
+    <collision>
+      <geometry>
+        <box size="${tube_width} ${drivebase_beam_width} ${drivebase_total_height}"/>
+      </geometry>
+      <origin xyz="${tube_width / 2 - base_length / 2} 0 0" />
+    </collision>
+
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+
+  </link>
+
+  <!-- DRIVEBASE -->
+  <!-- A general tread huge block: may be refined later for slightly better operational motion -->
+  <link name="tread_left_link">
+    <visual>
+      <geometry>
+        <box size="${tread_mid_length} ${tread_width} ${tread_mid_height}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${tread_mid_length} ${tread_width} ${tread_mid_height}"/>
+      </geometry>
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="left_tread_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="tread_left_link" />
+    <origin xyz="0 ${tread_spacing / 2 + tread_width / 2} 0" />
+  </joint>
+
+  <link name="tread_right_link">
+    <visual>
+      <geometry>
+        <box size="${tread_mid_length} ${tread_width} ${tread_mid_height}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${tread_mid_length} ${tread_width} ${tread_mid_height}"/>
+      </geometry>
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="right_tread_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="tread_right_link" />
+    <origin xyz="0 ${-tread_spacing / 2 - tread_width / 2} 0" />
+  </joint>
+
+  <link name="tread_left_front_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${tread_end_radius}" length="${tread_width}" />
+      </geometry>
+      <origin rpy="${pi/2} 0.0 0.0" />
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${tread_end_radius}" length="${tread_width}" />
+      </geometry>
+      <origin rpy="${pi/2} 0.0 0.0" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="tread_left_front_joint" type="fixed">
+    <parent link="tread_left_link" />
+    <child link="tread_left_front_link" />
+    <origin xyz="${intertread_length / 2} 0 ${-1.38*itom}" />
+  </joint>
+
+  <link name="tread_left_rear_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${tread_end_radius}" length="${tread_width}" />
+      </geometry>
+      <origin rpy="${pi/2} 0.0 0.0" />
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${tread_end_radius}" length="${tread_width}" />
+      </geometry>
+      <origin rpy="${pi/2} 0.0 0.0" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="tread_left_rear_joint" type="fixed">
+    <parent link="tread_left_link" />
+    <child link="tread_left_rear_link" />
+    <origin xyz="${-intertread_length / 2} 0 ${-1.38*itom}" />
+  </joint>
+
+  <link name="tread_right_front_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${tread_end_radius}" length="${tread_width}" />
+      </geometry>
+      <origin rpy="${pi/2} 0.0 0.0" />
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${tread_end_radius}" length="${tread_width}" />
+      </geometry>
+      <origin rpy="${pi/2} 0.0 0.0" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="tread_right_front_joint" type="fixed">
+    <parent link="tread_right_link" />
+    <child link="tread_right_front_link" />
+    <origin xyz="${intertread_length / 2} 0 ${-1.38*itom}" />
+  </joint>
+
+  <link name="tread_right_rear_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${tread_end_radius}" length="${tread_width}" />
+      </geometry>
+      <origin rpy="${pi/2} 0.0 0.0" />
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${tread_end_radius}" length="${tread_width}" />
+      </geometry>
+      <origin rpy="${pi/2} 0.0 0.0" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="tread_right_rear_joint" type="fixed">
+    <parent link="tread_right_link" />
+    <child link="tread_right_rear_link" />
+    <origin xyz="${-intertread_length / 2} 0 ${-1.38*itom}" />
+  </joint>
+
+  <link name="front_right_slope_link">
+    <visual>
+      <geometry>
+        <box size="${tread_slope_length} ${tread_width} ${1.25*itom}"/>
+      </geometry>
+      <origin xyz="${tread_slope_length/2} 0.0 ${-1.25/2*itom}" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${tread_slope_length} ${tread_width} ${1.25*itom}"/>
+      </geometry>
+      <origin xyz="${tread_slope_length/2} 0.0 ${-1.25/2*itom}" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="front_right_slope_joint" type="fixed">
+    <parent link="tread_right_link" />
+    <child link="front_right_slope_link" />
+    <origin xyz="${tread_mid_length/2} 0.0 ${tread_mid_height/2}" rpy="0.0 ${(180-160)*dtor} 0.0" />
+  </joint>
+
+  <link name="front_left_slope_link">
+    <visual>
+      <geometry>
+        <box size="${tread_slope_length} ${tread_width} ${1.25*itom}"/>
+      </geometry>
+      <origin xyz="${tread_slope_length/2} 0.0 ${-1.25/2*itom}" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${tread_slope_length} ${tread_width} ${1.25*itom}"/>
+      </geometry>
+      <origin xyz="${tread_slope_length/2} 0.0 ${-1.25/2*itom}" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+
+  <joint name="front_left_slope_joint" type="fixed">
+    <parent link="tread_left_link" />
+    <child link="front_left_slope_link" />
+    <origin xyz="${tread_mid_length/2} 0.0 ${tread_mid_height/2}" rpy="0.0 ${(180-160)*dtor} 0.0" />
+  </joint>
+
+  <!-- BIN -->
+  <link name="bin_back" >
+    <visual>
+      <geometry>
+        <box size="${0.125*itom} ${bin_width} ${bin_back_height}" />
+      </geometry>
+      <origin xyz="${bin_length} 0 ${-bin_height/2 + bin_height - (9.88 * itom) + (0.5*itom)}" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${0.125*itom} ${bin_width} ${bin_height}" />
+      </geometry>
+      <origin xyz="${bin_length} 0 ${-bin_height/2 + bin_height - (9.88 * itom) + (0.5*itom)}" />
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="bin_joint" type="revolute">
+    <parent link="base_link" />
+    <child link="bin_back" />
+    <axis xyz="0 -1 0" />
+    <origin xyz="${-base_length/2} 0 ${drivebase_total_height/2 + (9.88 * itom)}" />
+    <limit effort="1.0" velocity="1.0" lower="0" upper="${pi/4}" />
+  </joint>
+
+  <link name="bin_right" >
+    <visual>
+      <geometry>
+        <box size="${bin_length} ${0.125*itom} ${bin_height}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${bin_length} ${0.125*itom} ${bin_height}"/>
+      </geometry>
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="bin_right_joint" type="fixed">
+    <parent link="bin_back" />
+    <child link="bin_right" />
+    <origin xyz="${bin_length/2} ${-bin_width/2} ${bin_height/2 - (9.88 * itom) + (0.5*itom)}" />
+  </joint>
+
+  <link name="bin_left" >
+    <visual>
+      <geometry>
+        <box size="${bin_length} ${0.125*itom} ${bin_height}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${bin_length} ${0.125*itom} ${bin_height}"/>
+      </geometry>
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="bin_left_joint" type="fixed">
+    <parent link="bin_back" />
+    <child link="bin_left" />
+    <origin xyz="${bin_length/2} ${bin_width/2} ${bin_height/2 - (9.88 * itom) + (0.5*itom)}" />
+  </joint>
+
+  <link name="bin_bottom" >
+    <visual>
+      <geometry>
+        <box size="${13.84*itom} ${bin_width} ${0.125*itom}"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${13.84*itom} ${bin_width} ${0.125*itom}"/>
+      </geometry>
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="bin_bottom_joint" type="fixed">
+    <parent link="bin_back" />
+    <child link="bin_bottom" />
+    <origin xyz="${(13.84/2)*itom + (bin_length/2) - (sqrt2*itom)} 0 ${-(9.88 * itom) + (0.5 * itom)}" />
+  </joint>
+
+  <link name="bin_slope" >
+    <visual>
+      <geometry>
+        <box size="${0.125*itom} ${bin_width} ${bin_height*sqrt2}" />
+      </geometry>
+      <origin xyz="0 0 ${-bin_height*sqrt2*0.5}"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${0.125*itom} ${bin_width} ${bin_height*sqrt2}" />
+      </geometry>
+      <origin xyz="0 0 ${-bin_height*sqrt2*0.5}"/>
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="bin_slope_joint" type="fixed">
+    <parent link="bin_back" />
+    <child link="bin_slope" />
+    <origin xyz="0 0 ${(12-9.88) * itom}" rpy="0 ${-pi/4} 0"/>
+  </joint>
+  <link name="bin_slope_2" >
+    <visual>
+      <geometry>
+        <box size="${0.125*itom} ${bin_width} ${bin_height*sqrt2}" />
+      </geometry>
+      <origin xyz="${bin_back_offset} 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${0.125*itom} ${bin_width} ${bin_height*sqrt2}" />
+      </geometry>
+      <origin xyz=" ${bin_back_offset}  0 0"/>
+    </collision>
+    <!-- test -->
+    <inertial>
+      <mass value="1.0" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+    </inertial>
+  </link>
+  <joint name="bin_slope_2_joint" type="fixed">
+    <parent link="bin_back" />
+    <child link="bin_slope_2" />
+    <origin xyz="0  0 ${(12-9.88) * itom}" rpy="0 -0.105 0"/>
+  </joint>
+</robot>
+
