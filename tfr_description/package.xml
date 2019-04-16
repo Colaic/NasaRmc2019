@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>tfr_description</name>
+  <version>0.0.0</version>
+  <description>The tfr_description package</description>
+
+  <maintainer email="adam.krpan@outlook.com">Adam Krpan</maintainer>
+  <license>BSD</license>
+  <url type="website">http://www.trickfirerobotics.com/</url>
+  <author email="adam.krpan@outlook.com">Adam Krpan</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>xacro</exec_depend>
+</package>
