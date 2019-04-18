@@ -9,6 +9,8 @@
   <xacro:property name="sqrt2" value="1.41421" />
 
   <!-- Drivebase parameters -->
+  <xacro:property name="base_mass" value="${25.0}"/>
+
   <xacro:property name="base_length" value="${50*itom}" />
 
   <xacro:property name="tube_width" value="${2*itom}" />
@@ -36,12 +38,14 @@
 
 
   <!-- Turntable parameters -->
+  <xacro:property name="turntable_mass" value="${25.0}"/>
   <xacro:property name="turntable_radius" value="${4.92*itom}" />
   <!-- 1" in model plus undefined height for mounting and extra components -->
   <!-- Rounded to 2" for now -->
   <xacro:property name="turntable_height" value="${2.25*itom}" />
 
   <!-- Lower arm parameters -->
+  <xacro:property name="lower_arm_mass" value="${15.0}"/>
   <xacro:property name="lower_arm_length" value="${22*itom}" />
   <xacro:property name="lower_arm_primary_length" value="${16*itom}" />
   <xacro:property name="lower_arm_width" value="${6*itom}" />
@@ -50,6 +54,7 @@
   <xacro:property name="lower_arm_max" value="1.55" />   
 
   <!-- Upper arm parameters -->
+  <xacro:property name="upper_arm_mass" value="${10.0}"/>
   <xacro:property name="upper_arm_length" value="${20*itom}" />
   <xacro:property name="upper_arm_width" value="${4.75*itom}" />
   <xacro:property name="upper_arm_height" value="${5*itom}" />
@@ -57,6 +62,7 @@
   <xacro:property name="upper_arm_max" value="2.4"/>
 
   <!-- Scoop parameters -->
+  <xacro:property name="scoop_mass" value="${5.0}"/>
   <xacro:property name="scoop_width" value="${8.5*itom}" />
   <xacro:property name="scoop_length" value="${12*itom}" />
   <xacro:property name="scoop_diameter" value="${12.5*itom}" />
