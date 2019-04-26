@@ -1,6 +1,19 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="excavator">
 
+  <!-- attatch robot to world frame -->
+  <link name="world">
+    <!--<inertial>
+      <mass value="${100.0}" />
+      <inertia ixx="100.0" ixy="0.0" ixz="0.0" iyy="100.0" iyz="0.0" izz="100.0"/>
+    </inertial>-->
+  </link>
+
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="turntable"/>
+  </joint> 
+  
   <!--DIGGING ARM-->
   <link name="turntable">
     <visual>
@@ -17,12 +30,16 @@
     </collision>
     <!-- test -->
     <inertial>
-      <mass value="1.0" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+      <mass value="20.0" />
+      <!--<inertia ixx="${0.0833333 * turntable_mass * (3.0 * turntable_radius * turntable_radius + turntable_height * turntable_height)}" ixy="0.0" ixz="0.0"
+        iyy="${0.0833333 * turntable_mass * (3.0 * turntable_radius * turntable_radius + turntable_height * turntable_height)}" iyz="0.0"
+        izz="${0.5 * turntable_mass * turntable_radius * turntable_radius}" />-->
+      <inertia ixx="20.0" ixy="0.0" ixz="0.0" iyy="20.0" iyz="0.0" izz="20.0"/>
     </inertial>
   </link>
 
-  <joint name="turntable_joint" type="revolute">
+  <!--Removed joint because for my simulation I am not including the base-->
+  <!--<joint name="turntable_joint" type="revolute">
     <parent link="base_link" />
     <child link="turntable" />
     <origin xyz="${base_length/2-turntable_radius} 0 ${drivebase_front_beam_height/2}" rpy="0 0 ${pi}" />
@@ -31,7 +48,7 @@
   </joint>
   <transmission name="turntable_tran">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="turn_to_base">
+    <joint name="turntable_joint">
       <hardwareInterface>hardware_interface/EffortJointInterface
       </hardwareInterface>
     </joint>
@@ -41,7 +58,7 @@
       <mechanicalReduction>1</mechanicalReduction>
       <motorTorqueConstant>1</motorTorqueConstant>
     </actuator>
-  </transmission>
+  </transmission>-->
 
   <link name="lower_arm">
     <visual>
@@ -58,8 +75,11 @@
     </collision>
     <!-- test -->
     <inertial>
-      <mass value="1.0" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+      <mass value="15.0" />
+      <!--<inertia ixx="${0.0833333 * lower_arm_mass * (lower_arm_width*lower_arm_width + lower_arm_primary_length*lower_arm_primary_length)}" ixy="0.0" ixz="0.0"
+        iyy="${0.0833333 * lower_arm_mass * (lower_arm_height*lower_arm_height + lower_arm_primary_length*lower_arm_primary_length)}" iyz="0.0"
+        izz="${0.0833333 * lower_arm_mass * (lower_arm_height*lower_arm_height + lower_arm_width*lower_arm_width)}" />-->
+      <inertia ixx="15.0" ixy="0.0" ixz="0.0" iyy="15.0" iyz="0.0" izz="15.0"/>
     </inertial>
   </link>
 
@@ -73,12 +93,16 @@
   </joint>
   <transmission name="lower_arm_tran">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="lower_to_turn">
-      <hardwareInterface>hardware_interface/EffortJointInterface
+    <joint name="lower_arm_joint">
+      <!--<hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>-->
+      <hardwareInterface>hardware_interface/PositionJointInterface
       </hardwareInterface>
     </joint>
     <actuator name="lower_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface
+      <!--<hardwareInterface>hardware_interface/EffortJointInterface
+      </hardwareInterface>-->
+      <hardwareInterface>hardware_interface/PositionJointInterface
       </hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
       <motorTorqueConstant>1</motorTorqueConstant>
@@ -98,8 +122,9 @@
     </collision>
     <!-- test -->
     <inertial>
-      <mass value="1.0" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+      <mass value="15.0" />
+      <!--<inertia ixx="0.0833333 * lower_arm_mass" ixy="0.0" ixz="0.0" iyy="0.0833333 * lower_arm_mass" iyz="0.0" izz="0.0833333 * lower_arm_mass"/> -->
+      <inertia ixx="15.0" ixy="0.0" ixz="0.0" iyy="15.0" iyz="0.0" izz="15.0"/>
     </inertial>
   </link>
   <joint name="lower_arm_bottom_joint" type="fixed">
@@ -123,8 +148,9 @@
     </collision>
     <!-- test -->
     <inertial>
-      <mass value="1.0" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+      <mass value="15.0" />
+      <!--<inertia ixx="0.0833333 * lower_arm_mass" ixy="0.0" ixz="0.0" iyy="0.0833333 * lower_arm_mass" iyz="0.0" izz="0.0833333 * lower_arm_mass"/>  -->
+      <inertia ixx="15.0" ixy="0.0" ixz="0.0" iyy="15.0" iyz="0.0" izz="15.0"/>
     </inertial>
   </link>
   <joint name="lower_arm_slope_joint" type="fixed">
@@ -148,8 +174,11 @@
     </collision>
     <!-- test -->
     <inertial>
-      <mass value="1.0" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+      <mass value="10.0" />
+      <!--<inertia ixx="${0.0833333 * upper_arm_mass * (upper_arm_width*upper_arm_width + upper_arm_length*upper_arm_length)}" ixy="0.0" ixz="0.0"
+        iyy="${0.0833333 * upper_arm_mass * (upper_arm_height*upper_arm_height + upper_arm_length*upper_arm_length)}" iyz="0.0"
+        izz="${0.0833333 * upper_arm_mass * (upper_arm_height*upper_arm_height + upper_arm_width*upper_arm_width)}" /> -->
+      <inertia ixx="10.0" ixy="0.0" ixz="0.0" iyy="10.0" iyz="0.0" izz="10.0"/>
     </inertial>
   </link>
   <joint name="upper_arm_joint" type="revolute">
@@ -162,12 +191,12 @@
   </joint>
   <transmission name="upper_arm_tran">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="upper_to_lower">
-      <hardwareInterface>hardware_interface/EffortJointInterface
+    <joint name="upper_arm_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface
       </hardwareInterface>
     </joint>
     <actuator name="upper_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface
+      <hardwareInterface>hardware_interface/PositionJointInterface
       </hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
       <motorTorqueConstant>1</motorTorqueConstant>
@@ -189,8 +218,11 @@
     </collision>
     <!-- test -->
     <inertial>
-      <mass value="1.0" />
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/> 
+      <mass value="5.0" />
+      <!--<inertia ixx="${0.0833333 * scoop_mass * (scoop_width*scoop_width + (scoop_diameter/2)*(scoop_diameter/2))}" ixy="0.0" ixz="0.0"
+        iyy="${0.0833333 * scoop_mass * (scoop_length*scoop_length + (scoop_diameter/2)*(scoop_diameter/2))}" iyz="0.0"
+        izz="${0.0833333 * scoop_mass * (scoop_length*scoop_length + scoop_width*scoop_width)}" />-->
+      <inertia ixx="5.0" ixy="0.0" ixz="0.0" iyy="5.0" iyz="0.0" izz="5.0"/>
     </inertial>
   </link>
   <joint name="scoop_joint" type="revolute">
@@ -203,12 +235,12 @@
   </joint>
   <transmission name="scoop_tran">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="end_to_arm">
-      <hardwareInterface>hardware_interface/EffortJointInterface
+    <joint name="scoop_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface
       </hardwareInterface>
     </joint>
     <actuator name="end_motor">
-      <hardwareInterface>hardware_interface/EffortJointInterface
+      <hardwareInterface>hardware_interface/PositionJointInterface
       </hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
       <motorTorqueConstant>1</motorTorqueConstant>
