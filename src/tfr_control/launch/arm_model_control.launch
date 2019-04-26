@@ -1,0 +1,27 @@
+<launch>
+    <param name="robot_description"
+    command="$(find xacro)/xacro --inorder '$(find tfr_description)/xacro/model.xacro'" />
+    
+    <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+    <!-- line should be commented out when launching the control file from within the gazebo world launch-->
+    <!--<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+    args="-urdf -param robot_description" respawn="false" output="screen"/>-->
+    
+    <!-- Load all of the motor controllers -->
+    <rosparam file="$(find tfr_control)/config/arm_controller.yaml" command="load"/>
+
+    <!-- Spawn the controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        respawn="false" output="screen" ns="/tfr_arm"
+        args="
+        arm_controller
+        arm_end_controller
+        joint_state_controller"/>
+
+    <!-- Publishes the state of the robot to TF for Rviz or other usages -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher"
+        type="robot_state_publisher" respawn="false" output="screen">
+            <remap from="/joint_states" to="/tfr_arm/joint_states"/> 
+    </node>
+        
+</launch>
