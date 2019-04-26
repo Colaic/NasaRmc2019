@@ -1,0 +1,71 @@
+# ------------------------------------------------------------
+# This file holds the controller configurations for the arm controllars
+# on the robot.
+# 
+# These are loaded into the controller layer by the  controller
+# manager at will, and the joints they describe need to match the hardware
+# layer
+# 
+# The controller manager handles the upper level logic, and makes sure
+# the controllers do not conflict
+# 
+# Here is the benefit of having these controllers on the robot:
+# 
+# For one thing, these are PID controllers. Each controller has hand-calibrated
+# PID parameters attached to it, and these are used e.g. to maintain the robot 
+# in a certain position. 
+# 
+# Another thing these controllers do is implement a standard interface, as 
+# described by ros_control package. Other packages like MoveIt make use of 
+# these controllers to move the robot.
+# 
+# USAGE
+# To move the robot using these controllers, send the expected type of message
+# (e.g. a JointTrajectory message for a JointTrajectoryController) to the 
+# "/[controller name]/command" topic. See arm_manipulator.cpp for an example.
+#
+# ------------------------------------------------------------
+
+tfr_arm:
+
+    # Publish all joint states -----------------------------------
+    joint_state_controller:
+        type: joint_state_controller/JointStateController
+        publish_rate: 50
+
+    #lower_arm_controller:
+    #    type: position_controllers/JointTrajectoryController
+    #    joint: lower_arm_joint
+    #    pid: {p: 0.5, i: 0.2, d: 0.01}
+
+    #upper_arm_controller:
+    #    type: position_controllers/JointTrajectoryController
+    #    joint: upper_arm_joint
+    #    pid: {p: 0.8, i: 0.4, d: 0.03}
+    
+    # Controls all the joints of the main part of the arm 
+    arm_controller:
+        type: position_controllers/JointTrajectoryController
+        joints:
+            #no turntable joint in model yet
+            #- turntable_joint
+            - lower_arm_joint
+            - upper_arm_joint
+        gains:
+            #turntable_joint: {p: 0.6, i: 0.1, d: 0.00}
+            lower_arm_joint: {p: 0.5, i: 0.2, d: 0.01}
+            upper_arm_joint: {p: 0.8, i: 0.4, d: 0.03}
+        constraints:
+            goal_time: 10.0
+
+    # Controls the end effector (scoop) of the arm. This is
+    # separate from the main arm controller as MoveIt requires
+    # having a separate controller for the end effector
+    arm_end_controller:
+        type: position_controllers/JointTrajectoryController
+        joints:
+            - scoop_joint
+        gains:
+            scoop_joint: {p: 0.35, i: 0.1, d: 0.1}
+        constraints:
+            goal_time: 10.0
