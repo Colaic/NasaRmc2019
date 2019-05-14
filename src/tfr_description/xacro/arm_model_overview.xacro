@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
+<!-- This file contains a top level description for the model of just 
+    the arm without the Robot base -->
 <robot name="excavator" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Top-level robot description -->
   <xacro:include filename="model_constants.xacro"/>
-  <xacro:include filename="model_base.xacro"/>
-  <xacro:include filename="model_arm.xacro"/>
+  <xacro:include filename="arm_without_base.xacro"/>
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/</robotNamespace>
+      <robotNamespace>/tfr_arm</robotNamespace>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     </plugin>
   </gazebo>

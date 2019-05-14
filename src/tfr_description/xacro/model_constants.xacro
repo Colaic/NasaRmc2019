@@ -19,6 +19,8 @@
   <xacro:property name="drivebase_total_height" value="${6*itom}" />
 
   <!-- Drivetrain parameters -->
+  <xacro:property name="tred_left_mass" value="${30.0}" />
+  <xacro:property name="tred_right_mass" value="${30.0}" />
   <xacro:property name="tread_end_radius" value="${(15.5/2)*itom}" />
   <xacro:property name="tread_mid_height" value="${19*itom}" />
   <xacro:property name="tread_mid_length" value="${24*itom}" />
@@ -30,6 +32,7 @@
   <!-- Bin parameters -->
   <!-- Length of top of bin, length of bottom is 13.86 -->
   <!-- Using the bigger size as a box instead of making complex angled shape -->
+  <xacro:property name="bin_mass" value="${10.0}" />
   <xacro:property name="bin_length" value="${36*itom}" />
   <xacro:property name="bin_width" value="${13.5*itom}" />
   <xacro:property name="bin_height" value="${16*itom}" />
@@ -45,7 +48,7 @@
   <xacro:property name="turntable_height" value="${2.25*itom}" />
 
   <!-- Lower arm parameters -->
-  <xacro:property name="lower_arm_mass" value="${15.0}"/>
+  <xacro:property name="lower_arm_mass" value="${28.0}"/>
   <xacro:property name="lower_arm_length" value="${22*itom}" />
   <xacro:property name="lower_arm_primary_length" value="${16*itom}" />
   <xacro:property name="lower_arm_width" value="${6*itom}" />

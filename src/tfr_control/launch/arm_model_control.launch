@@ -1,6 +1,6 @@
 <launch>
     <param name="robot_description"
-    command="$(find xacro)/xacro --inorder '$(find tfr_description)/xacro/model.xacro'" />
+    command="$(find xacro)/xacro --inorder '$(find tfr_description)/xacro/arm_model_overview.xacro'" />
     
     <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
     <!-- line should be commented out when launching the control file from within the gazebo world launch-->

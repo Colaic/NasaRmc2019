@@ -1,5 +1,20 @@
 <?xml version="1.0"?>
+<!-- Model of the arm without the joint that would atatch it to the base.
+    used for simulation the arm without the base -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="excavator">
+
+  <!-- attatch robot to world frame -->
+  <link name="world">
+    <!--<inertial>
+      <mass value="${100.0}" />
+      <inertia ixx="100.0" ixy="0.0" ixz="0.0" iyy="100.0" iyz="0.0" izz="100.0"/>
+    </inertial>-->
+  </link>
+
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="turntable"/>
+  </joint> 
   
   <!--DIGGING ARM-->
   <link name="turntable">
@@ -25,7 +40,8 @@
     </inertial>
   </link>
 
-  <joint name="turntable_joint" type="revolute">
+  <!--Removed joint because for my simulation I am not including the base-->
+  <!--<joint name="turntable_joint" type="revolute">
     <parent link="base_link" />
     <child link="turntable" />
     <origin xyz="${base_length/2-turntable_radius} 0 ${drivebase_front_beam_height/2}" rpy="0 0 ${pi}" />
@@ -44,7 +60,7 @@
       <mechanicalReduction>1</mechanicalReduction>
       <motorTorqueConstant>1</motorTorqueConstant>
     </actuator>
-  </transmission>
+  </transmission>-->
 
   <link name="lower_arm">
     <visual>
